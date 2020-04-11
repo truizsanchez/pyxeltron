@@ -1,5 +1,6 @@
 from engine.entities.base import BaseEntity
+from render.entities.bullet import BulletRender
 
 
 class Bullet(BaseEntity):
-    pass
+    RENDER_CLASS = BulletRender

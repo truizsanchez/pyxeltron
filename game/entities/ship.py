@@ -1,5 +1,6 @@
 from engine.entities.base import BaseEntity
+from render.entities.ship import ShipRender
 
 
 class Ship(BaseEntity):
-    pass
+    RENDER_CLASS = ShipRender
