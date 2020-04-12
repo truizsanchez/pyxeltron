@@ -4,7 +4,7 @@ from engine.game_world import GameWorld
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
-from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP
+from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE
 from render.entities.bullet import BulletRender
 from render.entities.enemy import EnemyRender
 from render.entities.ship import ShipRender
@@ -12,7 +12,7 @@ from render.entities.ship import ShipRender
 
 class PyxelTron:
     def __init__(self):
-        pyxel.init(160, 120, caption="PyxelTron")
+        pyxel.init(160, 120, caption="PyxelTron", palette=PICO8_PALETTE)
         pyxel.image(TILESET).load(0, 0, TILESET_PATH)
         pyxel.image(SHIP).load(0, 0, SHIP_PATH)
         self.world = GameWorld()
