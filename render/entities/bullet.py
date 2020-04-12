@@ -1,8 +1,8 @@
 from render.constants import TILESET
-from render.entities.base import BaseRender
+from render.entities.static import StaticRender
 
 
-class BulletRender(BaseRender):
+class BulletRender(StaticRender):
     IMAGE_BANK = TILESET
     U = 16
     V = 16

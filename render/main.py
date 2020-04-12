@@ -4,32 +4,36 @@ from engine.game_world import GameWorld
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
-from render.constants import TILESET, TILESET_PATH
+from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP
+from render.entities.bullet import BulletRender
+from render.entities.enemy import EnemyRender
+from render.entities.ship import ShipRender
 
 
 class PyxelTron:
     def __init__(self):
         pyxel.init(160, 120, caption="PyxelTron")
         pyxel.image(TILESET).load(0, 0, TILESET_PATH)
+        pyxel.image(SHIP).load(0, 0, SHIP_PATH)
         self.world = GameWorld()
         self.initialize_world()
         pyxel.run(self.update, self.draw)
 
     def initialize_world(self):
-        self.world.add_entity('ship', Ship(0, 0))
-        self.world.add_entity('enemy', Enemy(0, 8))
-        self.world.add_entity('bullet', Bullet(8, 8))
+        self.world.add_entity('ship', Ship(0, 0, render_class=ShipRender))
+        self.world.add_entity('enemy', Enemy(0, 8, render_class=EnemyRender))
+        self.world.add_entity('bullet', Bullet(8, 8, render_class=BulletRender))
 
     def render_world(self):
         for name, entity in self.world.entities:
             pyxel.blt(
                 entity.x,
                 entity.y,
-                entity.RENDER_CLASS.IMAGE_BANK,
-                entity.RENDER_CLASS.U,
-                entity.RENDER_CLASS.V,
-                entity.RENDER_CLASS.WIDTH,
-                entity.RENDER_CLASS.HEIGHT
+                entity.render.IMAGE_BANK,
+                entity.render.u,
+                entity.render.v,
+                entity.render.WIDTH,
+                entity.render.HEIGHT
             )
 
     def _handle_input(self):

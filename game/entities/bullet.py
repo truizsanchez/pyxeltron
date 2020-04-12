@@ -1,6 +1,6 @@
 from engine.entities.base import BaseEntity
-from render.entities.bullet import BulletRender
 
 
 class Bullet(BaseEntity):
-    RENDER_CLASS = BulletRender
+    VX_DEFAULT = 5
+    VY_DEFAULT = 5
