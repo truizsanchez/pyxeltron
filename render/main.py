@@ -4,7 +4,7 @@ from engine.game_world import GameWorld
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
-from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE
+from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK
 from render.entities.bullet import BulletRender
 from render.entities.enemy import EnemyRender
 from render.entities.ship import ShipRender
@@ -33,7 +33,8 @@ class PyxelTron:
                 entity.render.u,
                 entity.render.v,
                 entity.render.WIDTH,
-                entity.render.HEIGHT
+                entity.render.HEIGHT,
+                COLOR_BLACK
             )
 
     def _handle_input(self):
@@ -48,6 +49,10 @@ class PyxelTron:
             ship.move_up()
         elif pyxel.btn(pyxel.KEY_DOWN):
             ship.move_down()
+        elif pyxel.btn(pyxel.KEY_SPACE):
+            bullet = Bullet(ship.x, ship.y, render_class=BulletRender)
+            self.world.add_entity('bullet', bullet)
+
 
     def update(self):
         self._handle_input()

@@ -5,7 +5,7 @@ TILESET_PATH = 'assets/tileset.png'
 SHIP = 1
 SHIP_PATH = 'assets/ship.png'
 
-
+COLOR_BLACK = 0x000000
 PICO8_PALETTE = [
     0x000000,
     0x1D2B53,
