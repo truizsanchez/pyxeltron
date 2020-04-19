@@ -53,7 +53,6 @@ class PyxelTron:
             bullet = Bullet(ship.x, ship.y, render_class=BulletRender)
             self.world.add_entity('bullet', bullet)
 
-
     def update(self):
         self._handle_input()
 
