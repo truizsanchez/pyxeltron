@@ -20,12 +20,11 @@ class PyxelTron:
         pyxel.run(self.update, self.draw)
 
     def initialize_world(self):
-        self.world.add_entity('ship', Ship(0, 0, render_class=ShipRender))
-        self.world.add_entity('enemy', Enemy(0, 8, render_class=EnemyRender))
-        self.world.add_entity('bullet', Bullet(8, 8, render_class=BulletRender))
+        self.world.add_entity(Ship(0, 0, render_class=ShipRender), 'ship')
+        self.world.add_entity_to_category(Enemy(0, 8, render_class=EnemyRender), 'enemies')
 
     def render_world(self):
-        for name, entity in self.world.entities:
+        for entity in self.world.entities:
             pyxel.blt(
                 entity.x,
                 entity.y,
@@ -51,7 +50,7 @@ class PyxelTron:
             ship.move_down()
         elif pyxel.btn(pyxel.KEY_SPACE):
             bullet = Bullet(ship.x, ship.y, render_class=BulletRender)
-            self.world.add_entity('bullet', bullet)
+            self.world.add_entity_to_category(bullet, 'bullets')
 
     def update(self):
         self._handle_input()
