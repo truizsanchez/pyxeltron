@@ -40,7 +40,3 @@ class CheckCollisionTest(unittest.TestCase):
         rect2 = Rectangle(x=2, y=4, width=2, height=3)
         result = check_collision(rect1, rect2)
         self.assertFalse(result)
-
-
-if __name__ == '__main__':
-    unittest.main()
