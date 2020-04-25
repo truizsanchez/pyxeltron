@@ -1,17 +1,19 @@
 import pyxel
 
 from game.game_world import PyxelTronGameWorld, Action
-from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK
+from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, CAPTION
+from settings import DEBUG
 
 
 class PyxelTron:
     def __init__(self):
-        pyxel.init(160, 120, caption="PyxelTron", palette=PICO8_PALETTE)
+        pyxel.init(160, 120, caption=CAPTION, palette=PICO8_PALETTE)
         pyxel.image(TILESET).load(0, 0, TILESET_PATH)
         pyxel.image(SHIP).load(0, 0, SHIP_PATH)
         self.world = PyxelTronGameWorld()
         self.world.initialize()
         pyxel.run(self.update, self.draw)
+        self.collisions = False
 
     def render_world(self):
         for entity in self.world.entities:
@@ -44,11 +46,13 @@ class PyxelTron:
 
     def update(self):
         self._handle_input()
-        self.world.update_collisions()
+        self.collisions = self.world.update_collisions()
 
     def draw(self):
         pyxel.cls(0)
         self.render_world()
+        if DEBUG and self.collisions:
+            pyxel.text(140, 110, 'PUM', 4)
 
 
 if __name__ == '__main__':

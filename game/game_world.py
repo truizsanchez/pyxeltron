@@ -1,5 +1,6 @@
 from enum import Enum
 
+from engine.collisions.rectangle import Rectangle, check_collision
 from engine.game_world import GameWorld
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
@@ -36,4 +37,12 @@ class PyxelTronGameWorld(GameWorld):
                 self.add_entity_to_category(bullet, 'bullets')
 
     def update_collisions(self):
-        pass
+        ship = self.get_entity('ship')
+        enemies = self.get_entities_by_category('enemies')
+        rect1 = Rectangle(ship.x, ship.y, ship.width, ship.height)
+        for enemy in enemies:
+            rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
+            collision = check_collision(rect1, rect_enemy)
+            if collision:
+                return True
+

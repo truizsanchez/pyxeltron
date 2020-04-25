@@ -24,3 +24,5 @@ PICO8_PALETTE = [
     0xFF77A8,
     0xFFCCAA
 ]
+
+CAPTION = 'PyxelTron'
