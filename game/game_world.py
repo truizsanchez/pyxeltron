@@ -33,7 +33,7 @@ class PyxelTronGameWorld(GameWorld):
             elif action == Action.MOVE_DOWN:
                 ship.move_down()
             elif action == Action.SHOOT:
-                bullet = Bullet(ship.x, ship.y)
+                bullet = Bullet(ship.x, ship.y, vx=ship.vx, vy=ship.vy)
                 self.add_entity_to_category(bullet, 'bullets')
 
     def update_collisions(self):
