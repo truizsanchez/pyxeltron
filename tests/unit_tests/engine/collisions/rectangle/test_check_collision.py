@@ -1,6 +1,6 @@
 import unittest
 
-from engine.collisions.rectangle import Rectangle, check_collision
+from engine.physics.collisions.rectangle import Rectangle, check_collision
 
 
 class CheckCollisionTest(unittest.TestCase):

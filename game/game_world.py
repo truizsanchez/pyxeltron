@@ -1,7 +1,7 @@
 from enum import Enum
 
-from engine.collisions.rectangle import Rectangle, check_collision
 from engine.game_world import GameWorld
+from engine.physics.collisions.rectangle import Rectangle, check_collision
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
