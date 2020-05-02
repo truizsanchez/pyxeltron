@@ -1,4 +1,4 @@
-from engine.physics.movement import Movement, DIRECTION_NONE
+from engine.physics.movement import Movement, RIGHT
 
 
 class BaseEntity:
@@ -7,7 +7,7 @@ class BaseEntity:
     VY_DEFAULT = 2
     WIDTH = None
     HEIGHT = None
-    MOVEMENT = Movement.STEERED
+    MOVEMENT_TYPE = Movement.STEERED
 
     def __init__(self, x=None, y=None, render_class=None, **kwargs):
         from render import glue
@@ -21,5 +21,6 @@ class BaseEntity:
         self.vy = kwargs.get('vy', self.VY_DEFAULT)
         self.width = kwargs.get('width', self.WIDTH)
         self.height = kwargs.get('height', self.HEIGHT)
-        self.direction = kwargs.get('direction', DIRECTION_NONE)
-        self.movement = kwargs.get('movement', self.MOVEMENT)
+        self.orientation = kwargs.get('direction', RIGHT)
+        self.direction = kwargs.get('direction', None)
+        self.movement_type = kwargs.get('movement', self.MOVEMENT_TYPE)

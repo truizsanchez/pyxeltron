@@ -33,15 +33,15 @@ class PyxelTron:
         action = None
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-        if pyxel.btnp(pyxel.KEY_LEFT):
+        if pyxel.btn(pyxel.KEY_LEFT):
             action = Action.MOVE_LEFT
-        elif pyxel.btnp(pyxel.KEY_RIGHT):
+        elif pyxel.btn(pyxel.KEY_RIGHT):
             action = Action.MOVE_RIGHT
-        elif pyxel.btnp(pyxel.KEY_UP):
+        elif pyxel.btn(pyxel.KEY_UP):
             action = Action.MOVE_UP
-        elif pyxel.btnp(pyxel.KEY_DOWN):
+        elif pyxel.btn(pyxel.KEY_DOWN):
             action = Action.MOVE_DOWN
-        elif pyxel.btnp(pyxel.KEY_SPACE):
+        elif pyxel.btn(pyxel.KEY_SPACE):
             action = Action.SHOOT
         self.world.update_scenario(action)
 

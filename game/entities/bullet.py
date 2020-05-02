@@ -7,4 +7,4 @@ class Bullet(BaseEntity):
     VY_DEFAULT = 5
     WIDTH = 8
     HEIGHT = 8
-    MOVEMENT = Movement.LINEAR_MOTION
+    MOVEMENT_TYPE = Movement.LINEAR_MOTION

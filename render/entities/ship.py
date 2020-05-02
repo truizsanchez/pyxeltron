@@ -1,4 +1,4 @@
-from engine.physics.movement import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_NONE
+from engine.physics.movement import UP, DOWN, RIGHT, LEFT
 from render.constants import SHIP
 from render.entities.base import BaseRender
 
@@ -9,17 +9,16 @@ class ShipRender(BaseRender):
     HEIGHT = 8
 
     UV = {
-        DIRECTION_UP: {'u': 0, 'v': 0},
-        DIRECTION_RIGHT: {'u': 8, 'v': 0},
-        DIRECTION_DOWN: {'u': 16, 'v': 0},
-        DIRECTION_LEFT: {'u': 24, 'v': 0},
-        DIRECTION_NONE: {'u': 0, 'v': 0},
+        UP: {'u': 0, 'v': 0},
+        RIGHT: {'u': 8, 'v': 0},
+        DOWN: {'u': 16, 'v': 0},
+        LEFT: {'u': 24, 'v': 0},
     }
 
     @property
     def u(self):
-        return self.UV[self.entity.direction]['u']
+        return self.UV[self.entity.orientation]['u']
 
     @property
     def v(self):
-        return self.UV[self.entity.direction]['v']
+        return self.UV[self.entity.orientation]['v']

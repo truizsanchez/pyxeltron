@@ -1,6 +1,6 @@
 from enum import Enum
 
-from engine.physics.movement import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_NONE
+from engine.physics.movement import UP, DOWN, RIGHT, LEFT
 from engine.game_world import GameWorld
 from engine.physics.collisions.rectangle import Rectangle, check_collision
 from game.entities.bullet import Bullet
@@ -25,16 +25,22 @@ class PyxelTronGameWorld(GameWorld):
     def _handle_action(self, action):
         ship = self.get_entity('ship')
         if action == Action.MOVE_LEFT:
-            ship.direction = DIRECTION_LEFT
+            ship.orientation = LEFT
+            ship.direction = LEFT
         elif action == Action.MOVE_RIGHT:
-            ship.direction = DIRECTION_RIGHT
+            ship.orientation = RIGHT
+            ship.direction = RIGHT
         elif action == Action.MOVE_UP:
-            ship.direction = DIRECTION_UP
+            ship.orientation = UP
+            ship.direction = UP
         elif action == Action.MOVE_DOWN:
-            ship.direction = DIRECTION_DOWN
+            ship.orientation = DOWN
+            ship.direction = DOWN
         elif action == Action.SHOOT:
-            bullet = Bullet(ship.x, ship.y, direction=ship.direction)
+            bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
             self.add_entity_to_category(bullet, 'bullets')
+        else:
+            ship.direction = None
 
     def update_scenario(self, action=None):
         self._handle_action(action)
