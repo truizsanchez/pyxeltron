@@ -1,4 +1,4 @@
-from engine.constants import DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_NONE
+from engine.physics.movement import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_NONE
 from render.constants import SHIP
 from render.entities.base import BaseRender
 

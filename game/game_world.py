@@ -1,6 +1,6 @@
 from enum import Enum
 
-from engine.constants import DIRECTION_LEFT, DIRECTION_RIGHT, DIRECTION_UP, DIRECTION_DOWN
+from engine.physics.movement import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_NONE
 from engine.game_world import GameWorld
 from engine.physics.collisions.rectangle import Rectangle, check_collision
 from game.entities.bullet import Bullet
@@ -22,25 +22,22 @@ class PyxelTronGameWorld(GameWorld):
         self.add_entity(Ship(0, 0), 'ship')
         self.add_entity_to_category(Enemy(0, 8), 'enemies')
 
-    def _handle_actions(self, actions):
+    def _handle_action(self, action):
         ship = self.get_entity('ship')
-        for action in actions:
-            if action == Action.MOVE_LEFT:
-                ship.direction = DIRECTION_LEFT
-            elif action == Action.MOVE_RIGHT:
-                ship.direction = DIRECTION_RIGHT
-            elif action == Action.MOVE_UP:
-                ship.direction = DIRECTION_UP
-            elif action == Action.MOVE_DOWN:
-                ship.direction = DIRECTION_DOWN
-            elif action == Action.SHOOT:
-                bullet = Bullet(ship.x, ship.y, direction=ship.direction)
-                self.add_entity_to_category(bullet, 'bullets')
-            else:
-                ship.direction = None
+        if action == Action.MOVE_LEFT:
+            ship.direction = DIRECTION_LEFT
+        elif action == Action.MOVE_RIGHT:
+            ship.direction = DIRECTION_RIGHT
+        elif action == Action.MOVE_UP:
+            ship.direction = DIRECTION_UP
+        elif action == Action.MOVE_DOWN:
+            ship.direction = DIRECTION_DOWN
+        elif action == Action.SHOOT:
+            bullet = Bullet(ship.x, ship.y, direction=ship.direction)
+            self.add_entity_to_category(bullet, 'bullets')
 
-    def update_scenario(self, actions=None):
-        self._handle_actions(actions)
+    def update_scenario(self, action=None):
+        self._handle_action(action)
         self._update_positions()
 
     def update_collisions(self):

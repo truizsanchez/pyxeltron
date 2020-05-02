@@ -1,4 +1,4 @@
-from engine.constants import DIRECTION_MOVEMENT
+from engine.physics.movement import update_position
 from engine.entities.base import BaseEntity
 
 
@@ -32,11 +32,8 @@ class GameWorld:
         return entities.remove(entity)
 
     def _update_positions(self):
-        for e in self.entities:
-            if e.direction:
-                movement = DIRECTION_MOVEMENT[e.direction]
-                e.x = e.x + (movement['x'] * e.vx)
-                e.y = e.y + (movement['y'] * e.vy)
+        for entity in self.entities:
+            update_position(entity)
 
     @property
     def entities(self):

@@ -30,20 +30,20 @@ class PyxelTron:
                 )
 
     def _handle_input(self):
+        action = None
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-        actions = []
-        if pyxel.btn(pyxel.KEY_LEFT):
-            actions.append(Action.MOVE_LEFT)
-        elif pyxel.btn(pyxel.KEY_RIGHT):
-            actions.append(Action.MOVE_RIGHT)
-        elif pyxel.btn(pyxel.KEY_UP):
-            actions.append(Action.MOVE_UP)
-        elif pyxel.btn(pyxel.KEY_DOWN):
-            actions.append(Action.MOVE_DOWN)
-        elif pyxel.btn(pyxel.KEY_SPACE):
-            actions.append(Action.SHOOT)
-        self.world.update_scenario(actions)
+        if pyxel.btnp(pyxel.KEY_LEFT):
+            action = Action.MOVE_LEFT
+        elif pyxel.btnp(pyxel.KEY_RIGHT):
+            action = Action.MOVE_RIGHT
+        elif pyxel.btnp(pyxel.KEY_UP):
+            action = Action.MOVE_UP
+        elif pyxel.btnp(pyxel.KEY_DOWN):
+            action = Action.MOVE_DOWN
+        elif pyxel.btnp(pyxel.KEY_SPACE):
+            action = Action.SHOOT
+        self.world.update_scenario(action)
 
     def update(self):
         self._handle_input()
