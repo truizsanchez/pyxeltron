@@ -1,4 +1,4 @@
-from engine.constants import DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTION_LEFT
+from engine.constants import DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_NONE
 from render.constants import SHIP
 from render.entities.base import BaseRender
 
@@ -13,6 +13,7 @@ class ShipRender(BaseRender):
         DIRECTION_RIGHT: {'u': 8, 'v': 0},
         DIRECTION_DOWN: {'u': 16, 'v': 0},
         DIRECTION_LEFT: {'u': 24, 'v': 0},
+        DIRECTION_NONE: {'u': 0, 'v': 0},
     }
 
     @property

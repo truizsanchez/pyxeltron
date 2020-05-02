@@ -17,16 +17,17 @@ class PyxelTron:
 
     def render_world(self):
         for entity in self.world.entities:
-            pyxel.blt(
-                entity.x,
-                entity.y,
-                entity.render.IMAGE_BANK,
-                entity.render.u,
-                entity.render.v,
-                entity.render.WIDTH,
-                entity.render.HEIGHT,
-                COLOR_BLACK
-            )
+            if entity.render:
+                pyxel.blt(
+                    entity.x,
+                    entity.y,
+                    entity.render.IMAGE_BANK,
+                    entity.render.u,
+                    entity.render.v,
+                    entity.render.WIDTH,
+                    entity.render.HEIGHT,
+                    COLOR_BLACK
+                )
 
     def _handle_input(self):
         if pyxel.btnp(pyxel.KEY_Q):

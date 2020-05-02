@@ -1,4 +1,4 @@
-from engine.constants import DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_UP, DIRECTION_DOWN
+from engine.constants import DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_UP, DIRECTION_DOWN, DIRECTION_NONE
 from engine.physics.movement import Movement
 
 
@@ -22,7 +22,7 @@ class BaseEntity:
         self.vy = kwargs.get('vy', self.VY_DEFAULT)
         self.width = kwargs.get('width', self.WIDTH)
         self.height = kwargs.get('height', self.HEIGHT)
-        self.direction = kwargs.get('direction', DIRECTION_RIGHT)
+        self.direction = kwargs.get('direction', DIRECTION_NONE)
         self.movement = kwargs.get('movement', self.MOVEMENT)
 
     def move_left(self):
