@@ -50,6 +50,7 @@ class PyxelTronGameWorld(GameWorld):
     def update_scenario(self, actions):
         self._handle_action(actions)
         self._update_positions()
+        # TODO: remove entities outside world zone render. should be configured by entity class
 
     def update_collisions(self):
         ship = self.get_entity('ship')

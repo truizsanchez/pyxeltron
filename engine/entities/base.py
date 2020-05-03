@@ -1,4 +1,4 @@
-from engine.physics.movement import Movement, RIGHT
+from engine.physics.movement import Movement, RIGHT, PositionType
 
 
 class BaseEntity:
@@ -8,6 +8,7 @@ class BaseEntity:
     WIDTH = None
     HEIGHT = None
     MOVEMENT_TYPE = Movement.STEERED
+    POSITION_TYPE = PositionType.BOUNDED
 
     def __init__(self, x=None, y=None, render_class=None, **kwargs):
         from render import glue
@@ -24,3 +25,4 @@ class BaseEntity:
         self.orientation = kwargs.get('direction', RIGHT)
         self.direction = kwargs.get('direction', None)
         self.movement_type = kwargs.get('movement', self.MOVEMENT_TYPE)
+        self.position_type = kwargs.get('position_type', self.POSITION_TYPE)

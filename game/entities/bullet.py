@@ -1,5 +1,5 @@
 from engine.entities.base import BaseEntity
-from engine.physics.movement import Movement
+from engine.physics.movement import Movement, PositionType
 
 
 class Bullet(BaseEntity):
@@ -8,3 +8,4 @@ class Bullet(BaseEntity):
     WIDTH = 8
     HEIGHT = 8
     MOVEMENT_TYPE = Movement.LINEAR_MOTION
+    POSITION_TYPE = PositionType.BOUNDLESS

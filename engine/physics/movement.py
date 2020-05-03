@@ -6,6 +6,11 @@ class Movement(Enum):
     STEERED = 2
 
 
+class PositionType(Enum):
+    BOUNDED = 1
+    BOUNDLESS = 2
+
+
 UP = 'up'
 DOWN = 'down'
 RIGHT = 'right'
@@ -31,7 +36,10 @@ def update_position(entity, world_width, world_height):
         movement = CARTESIAN[entity.direction]
         x = entity.x + (movement['x'] * entity.vx)
         y = entity.y + (movement['y'] * entity.vy)
-        max_x = world_width + entity.width
-        max_y = world_height + entity.height
-        entity.x = truncate_coordinate(x, entity.width, world_width)
-        entity.y = truncate_coordinate(y, entity.height, world_height)
+
+        if entity.position_type == PositionType.BOUNDED:
+            x = truncate_coordinate(x, entity.width, world_width)
+            y = truncate_coordinate(y, entity.height, world_height)
+
+        entity.x = x
+        entity.y = y
