@@ -22,28 +22,33 @@ class PyxelTronGameWorld(GameWorld):
         self.add_entity(Ship(0, 0), 'ship')
         self.add_entity_to_category(Enemy(0, 8), 'enemies')
 
-    def _handle_action(self, action):
+    def _handle_action(self, actions):
         ship = self.get_entity('ship')
-        if action == Action.MOVE_LEFT:
-            ship.orientation = LEFT
-            ship.direction = LEFT
-        elif action == Action.MOVE_RIGHT:
-            ship.orientation = RIGHT
-            ship.direction = RIGHT
-        elif action == Action.MOVE_UP:
-            ship.orientation = UP
-            ship.direction = UP
-        elif action == Action.MOVE_DOWN:
-            ship.orientation = DOWN
-            ship.direction = DOWN
-        elif action == Action.SHOOT:
-            bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
-            self.add_entity_to_category(bullet, 'bullets')
-        else:
+        if not actions:
             ship.direction = None
 
-    def update_scenario(self, action=None):
-        self._handle_action(action)
+        for action in actions:
+            if action == Action.MOVE_LEFT:
+                ship.orientation = LEFT
+                ship.direction = LEFT
+            elif action == Action.MOVE_RIGHT:
+                ship.orientation = RIGHT
+                ship.direction = RIGHT
+            elif action == Action.MOVE_UP:
+                ship.orientation = UP
+                ship.direction = UP
+            elif action == Action.MOVE_DOWN:
+                ship.orientation = DOWN
+                ship.direction = DOWN
+            else:
+                ship.direction = None
+
+            if action == Action.SHOOT:
+                bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
+                self.add_entity_to_category(bullet, 'bullets')
+
+    def update_scenario(self, actions):
+        self._handle_action(actions)
         self._update_positions()
 
     def update_collisions(self):
