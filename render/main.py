@@ -13,7 +13,7 @@ class PyxelTron:
         pyxel.image(SHIP).load(0, 0, SHIP_PATH)
         self.world.initialize()
         pyxel.run(self.update, self.draw)
-        self.collisions = False
+        self.collisions = None
 
     def render_world(self):
         for entity in self.world.entities:
@@ -52,8 +52,13 @@ class PyxelTron:
     def draw(self):
         pyxel.cls(0)
         self.render_world()
-        if DEBUG and self.collisions:
-            pyxel.text(140, 110, 'PUM', 4)
+        if DEBUG:
+            ship_enemies = self.collisions['ship_enemies']
+            bullet_enemies = self.collisions['bullet_enemies']
+            if len(ship_enemies) > 0:
+                pyxel.text(140, 100, 'DEATH', 4)
+            if len(bullet_enemies) > 0:
+                pyxel.text(140, 110, 'KILL', 4)
 
 
 if __name__ == '__main__':

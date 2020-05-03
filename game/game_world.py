@@ -52,13 +52,33 @@ class PyxelTronGameWorld(GameWorld):
         self._update_positions()
         # TODO: remove entities outside world zone render. should be configured by entity class
 
-    def update_collisions(self):
+    def _update_collision_bullets_enemies(self):
+        enemies = self.get_entities_by_category('enemies')
+        bullets = self.get_entities_by_category('bullets')
+        collisions = []
+        if bullets and enemies:
+            for idx_enemy, enemy in enumerate(enemies):
+                for idx_bullet, bullet in enumerate(bullets):
+                    rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
+                    rect_bullet = Rectangle(bullet.x, bullet.y, bullet.width, bullet.height)
+                    collision = check_collision(rect_enemy, rect_bullet)
+                    if collision:
+                        collisions.append((idx_bullet, idx_enemy,))
+        return collisions
+
+    def _update_collision_ship_enemies(self):
         ship = self.get_entity('ship')
         enemies = self.get_entities_by_category('enemies')
-        rect1 = Rectangle(ship.x, ship.y, ship.width, ship.height)
-        for enemy in enemies:
+        collisions = []
+        rect_ship = Rectangle(ship.x, ship.y, ship.width, ship.height)
+        for idx_enemy, enemy in enumerate(enemies):
             rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
-            collision = check_collision(rect1, rect_enemy)
+            collision = check_collision(rect_enemy, rect_ship)
             if collision:
-                return True
+                collisions.append(idx_enemy)
+        return collisions
 
+    def update_collisions(self):
+        ship_enemies = self._update_collision_ship_enemies()
+        bullet_enemies = self._update_collision_bullets_enemies()
+        return dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
