@@ -4,6 +4,9 @@ from engine.entities.base import BaseEntity
 
 class GameWorld:
 
+    WIDTH = 160
+    HEIGHT = 120
+
     def __init__(self):
         self._entities = dict()
 
@@ -33,7 +36,9 @@ class GameWorld:
 
     def _update_positions(self):
         for entity in self.entities:
-            update_position(entity)
+            update_position(entity, self.WIDTH, self.HEIGHT)
+            if entity.__class__.__name__ == 'Ship':
+                print(f'{entity.x}  {entity.y}')
 
     @property
     def entities(self):

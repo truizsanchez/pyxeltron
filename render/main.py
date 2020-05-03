@@ -7,10 +7,10 @@ from settings import DEBUG
 
 class PyxelTron:
     def __init__(self):
-        pyxel.init(160, 120, caption=CAPTION, palette=PICO8_PALETTE)
+        self.world = PyxelTronGameWorld()
+        pyxel.init(self.world.WIDTH, self.world.HEIGHT, caption=CAPTION, palette=PICO8_PALETTE)
         pyxel.image(TILESET).load(0, 0, TILESET_PATH)
         pyxel.image(SHIP).load(0, 0, SHIP_PATH)
-        self.world = PyxelTronGameWorld()
         self.world.initialize()
         pyxel.run(self.update, self.draw)
         self.collisions = False
