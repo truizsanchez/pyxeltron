@@ -19,8 +19,12 @@ class Action(Enum):
 class PyxelTronGameWorld(GameWorld):
 
     def initialize(self):
-        self.add_entity(Ship(0, 0), 'ship')
-        self.add_entity_to_category(Enemy(0, 8), 'enemies')
+        self.add_entity(Ship(64, 64), 'ship')
+        self.add_entity_to_category(Enemy(16, 16), 'enemies')
+        self.add_entity_to_category(Enemy(24, 8), 'enemies')
+        self.add_entity_to_category(Enemy(96, 32), 'enemies')
+        self.add_entity_to_category(Enemy(96, 96), 'enemies')
+        self.add_entity_to_category(Enemy(8, 92), 'enemies')
 
     def _handle_action(self, actions):
         ship = self.get_entity('ship')
