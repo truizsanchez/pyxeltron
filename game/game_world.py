@@ -47,8 +47,34 @@ class PyxelTronGameWorld(GameWorld):
                 bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
                 self.add_entity_to_category(bullet, 'bullets')
 
+    def _calculate_direction_from_enemy_to_ship(self, enemy, ship):
+        # the enemy chase the ship shortening the longest component distance
+        x_distance = abs(enemy.x - ship.x)
+        y_distance = abs(enemy.y - ship.y)
+        if x_distance > y_distance:
+            if enemy.x < ship.x:
+                enemy.orientation = RIGHT
+                enemy.direction = RIGHT
+            else:
+                enemy.orientation = LEFT
+                enemy.direction = LEFT
+        else:
+            if enemy.y < ship.y:
+                enemy.orientation = DOWN
+                enemy.direction = DOWN
+            else:
+                enemy.direction = UP
+                enemy.orientation = UP
+
+    def _update_enemies(self):
+        enemies = self.get_entities_by_category('enemies')
+        ship = self.get_entity('ship')
+        for enemy in enemies:
+            self._calculate_direction_from_enemy_to_ship(enemy, ship)
+
     def update_scenario(self, actions):
         self._handle_action(actions)
+        self._update_enemies()
         self._update_positions()
         # TODO: remove entities outside world zone render. should be configured by entity class
 
