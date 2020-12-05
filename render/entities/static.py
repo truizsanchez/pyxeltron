@@ -6,9 +6,9 @@ class StaticRender(BaseRender):
     V = None
 
     @property
-    def u(self):
+    def u(self) -> int:
         return self.U
 
     @property
-    def v(self):
+    def v(self) -> int:
         return self.V

@@ -1,9 +1,9 @@
 class Rectangle:
     def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        self.x: int = x
+        self.y: int = y
+        self.width: int = width
+        self.height: int = height
 
 
 def check_collision(rect1: Rectangle, rect2: Rectangle) -> bool:

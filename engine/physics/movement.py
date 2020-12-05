@@ -23,7 +23,7 @@ CARTESIAN = {
 }
 
 
-def truncate_coordinate(coordinate, entity_size, max_value):
+def truncate_coordinate(coordinate, entity_size, max_value) -> int:
     if coordinate < 0:
         coordinate = 0
     if coordinate + entity_size > max_value:
@@ -31,7 +31,7 @@ def truncate_coordinate(coordinate, entity_size, max_value):
     return coordinate
 
 
-def update_position(entity, world_width, world_height):
+def update_position(entity, world_width, world_height) -> None:
     if entity.direction:
         movement = CARTESIAN[entity.direction]
         x = entity.x + (movement['x'] * entity.vx)

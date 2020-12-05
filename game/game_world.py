@@ -1,5 +1,7 @@
 from enum import Enum
+from typing import List, Tuple, Dict, Union
 
+from engine.entities.base import BaseEntity
 from engine.physics.movement import UP, DOWN, RIGHT, LEFT
 from engine.game_world import GameWorld
 from engine.physics.collisions.rectangle import Rectangle, check_collision
@@ -26,7 +28,7 @@ class PyxelTronGameWorld(GameWorld):
         self.add_entity_to_category(Enemy(96, 96), 'enemies')
         self.add_entity_to_category(Enemy(8, 92), 'enemies')
 
-    def _handle_action(self, actions):
+    def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
         if not actions:
             ship.direction = None
@@ -51,10 +53,10 @@ class PyxelTronGameWorld(GameWorld):
                 bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
                 self.add_entity_to_category(bullet, 'bullets')
 
-    def _calculate_direction_from_enemy_to_ship(self, enemy, ship):
+    def _calculate_direction_from_enemy_to_ship(self, enemy: BaseEntity, ship: BaseEntity) -> None:
         # the enemy chase the ship shortening the longest component distance
-        x_distance = abs(enemy.x - ship.x)
-        y_distance = abs(enemy.y - ship.y)
+        x_distance: int = abs(enemy.x - ship.x)
+        y_distance: int = abs(enemy.y - ship.y)
         if x_distance > y_distance:
             if enemy.x < ship.x:
                 enemy.orientation = RIGHT
@@ -70,22 +72,22 @@ class PyxelTronGameWorld(GameWorld):
                 enemy.direction = UP
                 enemy.orientation = UP
 
-    def _update_enemies(self):
-        enemies = self.get_entities_by_category('enemies')
-        ship = self.get_entity('ship')
+    def _update_enemies(self) -> None:
+        enemies: List[BaseEntity] = self.get_entities_by_category('enemies')
+        ship: BaseEntity = self.get_entity('ship')
         for enemy in enemies:
             self._calculate_direction_from_enemy_to_ship(enemy, ship)
 
-    def update_scenario(self, actions):
-        self._handle_action(actions)
+    def update_scenario(self, actions: List[Action]):
+        self._handle_actions(actions)
         self._update_enemies()
         self._update_positions()
         # TODO: remove entities outside world zone render. should be configured by entity class
 
-    def _update_collision_bullets_enemies(self):
+    def _update_collision_bullets_enemies(self) -> List[Tuple[int, int]]:
         enemies = self.get_entities_by_category('enemies')
         bullets = self.get_entities_by_category('bullets')
-        collisions = []
+        collisions: List[Tuple[int, int]] = []
         if bullets and enemies:
             for idx_enemy, enemy in enumerate(enemies):
                 for idx_bullet, bullet in enumerate(bullets):
@@ -96,10 +98,10 @@ class PyxelTronGameWorld(GameWorld):
                         collisions.append((idx_bullet, idx_enemy,))
         return collisions
 
-    def _update_collision_ship_enemies(self):
+    def _update_collision_ship_enemies(self) -> List[int]:
         ship = self.get_entity('ship')
         enemies = self.get_entities_by_category('enemies')
-        collisions = []
+        collisions: List[int] = []
         rect_ship = Rectangle(ship.x, ship.y, ship.width, ship.height)
         for idx_enemy, enemy in enumerate(enemies):
             rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
@@ -108,7 +110,7 @@ class PyxelTronGameWorld(GameWorld):
                 collisions.append(idx_enemy)
         return collisions
 
-    def update_collisions(self):
+    def update_collisions(self) -> Dict[str, Union[List[Tuple[int, int]], List[int]]]:
         ship_enemies = self._update_collision_ship_enemies()
         bullet_enemies = self._update_collision_bullets_enemies()
         return dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)

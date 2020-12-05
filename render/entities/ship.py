@@ -16,9 +16,9 @@ class ShipRender(BaseRender):
     }
 
     @property
-    def u(self):
+    def u(self) -> int:
         return self.UV[self.entity.orientation]['u']
 
     @property
-    def v(self):
+    def v(self) -> int:
         return self.UV[self.entity.orientation]['v']

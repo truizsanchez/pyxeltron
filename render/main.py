@@ -15,7 +15,7 @@ class PyxelTron:
         pyxel.run(self.update, self.draw)
         self.collisions = None
 
-    def render_world(self):
+    def render_world(self) -> None:
         for entity in self.world.entities:
             if entity.render:
                 pyxel.blt(
@@ -29,7 +29,7 @@ class PyxelTron:
                     COLOR_BLACK
                 )
 
-    def _handle_input(self):
+    def _handle_input(self) -> None:
         actions = []
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
@@ -45,20 +45,22 @@ class PyxelTron:
             actions.append(Action.SHOOT)
         self.world.update_scenario(actions)
 
-    def update(self):
+    def update(self) -> None:
         self._handle_input()
         self.collisions = self.world.update_collisions()
 
-    def draw(self):
+    def draw(self) -> None:
         pyxel.cls(0)
         self.render_world()
         if DEBUG:
             ship_enemies = self.collisions['ship_enemies']
             bullet_enemies = self.collisions['bullet_enemies']
             if len(ship_enemies) > 0:
-                pyxel.text(140, 100, 'DEATH', 4)
+                msg = f'{ship_enemies} DEATH'
+                pyxel.text(100, 100, msg, 4)
             if len(bullet_enemies) > 0:
-                pyxel.text(140, 110, 'KILL', 4)
+                msg = f'{bullet_enemies} KILL'
+                pyxel.text(100, 110, msg, 4)
 
 
 if __name__ == '__main__':
