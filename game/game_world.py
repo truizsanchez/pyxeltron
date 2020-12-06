@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Tuple, Dict, Union
+from typing import List, Tuple
 
 from engine.entities.base import BaseEntity
 from engine.physics.movement import UP, DOWN, RIGHT, LEFT
@@ -85,15 +85,15 @@ class PyxelTronGameWorld(GameWorld):
         self._evaluate_scenario()
 
     def _evaluate_scenario(self):
-        # TODO: remove entities outside world zone render. should be configured by entity class
         ship_enemies = self._calculate_collisions_ship_enemies()
         bullet_enemies = self._calculate_collisions_bullets_enemies()
         for bullet, enemy in bullet_enemies:
             self.remove_entity_from_category('enemies', enemy)
             self.remove_entity_from_category('bullets', bullet)
+        self._remove_entities_outside_viewport()
         # TODO: return actions after collision evaluation (ship destroyed, enemy down etc)
 
-    def _calculate_collision_between_entities(self, entity1, entity2):
+    def _calculate_collision_between_entities(self, entity1: BaseEntity, entity2: BaseEntity) -> bool:
         rect_entity1 = Rectangle(entity1.x, entity1.y, entity1.width, entity1.height)
         rect_entity2 = Rectangle(entity2.x, entity2.y, entity2.width, entity2.height)
         return check_collision(rect_entity1, rect_entity2)
@@ -102,15 +102,14 @@ class PyxelTronGameWorld(GameWorld):
         enemies = self.get_entities_by_category('enemies')
         bullets = self.get_entities_by_category('bullets')
         collisions: List[Tuple[BaseEntity, BaseEntity]] = []
-        if bullets and enemies:
-            impacted_bullets = []
-            for enemy in enemies:
-                bullets = [bullet for bullet in bullets if bullet not in impacted_bullets]
-                for bullet in bullets:
-                    collision = self._calculate_collision_between_entities(enemy, bullet)
-                    if collision:
-                        collisions.append((bullet, enemy,))
-                        impacted_bullets.append(bullet)
+        impacted_bullets = []
+        for enemy in enemies:
+            bullets = [bullet for bullet in bullets if bullet not in impacted_bullets]
+            for bullet in bullets:
+                collision = self._calculate_collision_between_entities(enemy, bullet)
+                if collision:
+                    collisions.append((bullet, enemy,))
+                    impacted_bullets.append(bullet)
         return collisions
 
     def _calculate_collisions_ship_enemies(self) -> List[BaseEntity]:
@@ -123,3 +122,8 @@ class PyxelTronGameWorld(GameWorld):
                 collisions.append(enemy)
         return collisions
 
+    def _remove_entities_outside_viewport(self):
+        bullets = self.get_entities_by_category('bullets')
+        for bullet in bullets:
+            if bullet.x < 0 or bullet.x > self.WIDTH or bullet.y < 0 or bullet.y > self.HEIGHT:
+                self.remove_entity_from_category('bullets', bullet)

@@ -27,7 +27,7 @@ class GameWorld:
         return self._entities.get(name)
 
     def get_entities_by_category(self, category: str) -> List[BaseEntity]:
-        return self._entities.get(category)
+        return self._entities.get(category, [])
 
     def remove_entity(self, name: str) -> None:
         self._entities.pop(name)
