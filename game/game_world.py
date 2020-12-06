@@ -20,6 +20,10 @@ class Action(Enum):
 
 class PyxelTronGameWorld(GameWorld):
 
+    def __init__(self):
+        super().__init__()
+        self._collisions: Union[Dict[str, Union[List[Tuple[int, int]], List[int]]], None] = None
+
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
         self.add_entity_to_category(Enemy(16, 16), 'enemies')
@@ -83,6 +87,8 @@ class PyxelTronGameWorld(GameWorld):
         self._update_enemies()
         self._update_positions()
         # TODO: remove entities outside world zone render. should be configured by entity class
+        self._update_collisions()
+        # TODO: actions after collision evaluation (ship destroyed, enemy down etc)
 
     def _update_collision_bullets_enemies(self) -> List[Tuple[int, int]]:
         enemies = self.get_entities_by_category('enemies')
@@ -110,7 +116,7 @@ class PyxelTronGameWorld(GameWorld):
                 collisions.append(idx_enemy)
         return collisions
 
-    def update_collisions(self) -> Dict[str, Union[List[Tuple[int, int]], List[int]]]:
+    def _update_collisions(self) -> None:
         ship_enemies = self._update_collision_ship_enemies()
         bullet_enemies = self._update_collision_bullets_enemies()
-        return dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
+        self._collisions = dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
