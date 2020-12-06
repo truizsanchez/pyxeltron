@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 from typing import List, Tuple, Dict, Union
 
@@ -28,7 +27,6 @@ class PyxelTronGameWorld(GameWorld):
         self.add_entity_to_category(Enemy(96, 32), 'enemies')
         self.add_entity_to_category(Enemy(96, 96), 'enemies')
         self.add_entity_to_category(Enemy(8, 92), 'enemies')
-        self.add_entity_to_category(Enemy(16, 16), 'enemies')
 
     def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
@@ -95,29 +93,32 @@ class PyxelTronGameWorld(GameWorld):
             self.remove_entity_from_category('bullets', bullet)
         # TODO: return actions after collision evaluation (ship destroyed, enemy down etc)
 
+    def _calculate_collision_between_entities(self, entity1, entity2):
+        rect_entity1 = Rectangle(entity1.x, entity1.y, entity1.width, entity1.height)
+        rect_entity2 = Rectangle(entity2.x, entity2.y, entity2.width, entity2.height)
+        return check_collision(rect_entity1, rect_entity2)
+
     def _calculate_collisions_bullets_enemies(self) -> List[Tuple[BaseEntity, BaseEntity]]:
         enemies = self.get_entities_by_category('enemies')
         bullets = self.get_entities_by_category('bullets')
         collisions: List[Tuple[BaseEntity, BaseEntity]] = []
         if bullets and enemies:
+            impacted_bullets = []
             for enemy in enemies:
+                bullets = [bullet for bullet in bullets if bullet not in impacted_bullets]
                 for bullet in bullets:
-                    rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
-                    rect_bullet = Rectangle(bullet.x, bullet.y, bullet.width, bullet.height)
-                    collision = check_collision(rect_enemy, rect_bullet)
+                    collision = self._calculate_collision_between_entities(enemy, bullet)
                     if collision:
                         collisions.append((bullet, enemy,))
-                        break
+                        impacted_bullets.append(bullet)
         return collisions
 
     def _calculate_collisions_ship_enemies(self) -> List[BaseEntity]:
         ship = self.get_entity('ship')
         enemies = self.get_entities_by_category('enemies')
         collisions: List[BaseEntity] = []
-        rect_ship = Rectangle(ship.x, ship.y, ship.width, ship.height)
-        for idx_enemy, enemy in enumerate(enemies):
-            rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
-            collision = check_collision(rect_enemy, rect_ship)
+        for enemy in enemies:
+            collision = self._calculate_collision_between_entities(enemy, ship)
             if collision:
                 collisions.append(enemy)
         return collisions
