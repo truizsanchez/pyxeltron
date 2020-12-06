@@ -29,10 +29,6 @@ class PyxelTronGameWorld(GameWorld):
         self.add_entity_to_category(Enemy(96, 96), 'enemies')
         self.add_entity_to_category(Enemy(8, 92), 'enemies')
         self.add_entity_to_category(Enemy(16, 16), 'enemies')
-        self.add_entity_to_category(Enemy(24, 8), 'enemies')
-        self.add_entity_to_category(Enemy(96, 32), 'enemies')
-        self.add_entity_to_category(Enemy(96, 96), 'enemies')
-        self.add_entity_to_category(Enemy(8, 92), 'enemies')
 
     def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
@@ -104,13 +100,14 @@ class PyxelTronGameWorld(GameWorld):
         bullets = self.get_entities_by_category('bullets')
         collisions: List[Tuple[BaseEntity, BaseEntity]] = []
         if bullets and enemies:
-            for idx_enemy, enemy in enumerate(enemies):
-                for idx_bullet, bullet in enumerate(bullets):
+            for enemy in enemies:
+                for bullet in bullets:
                     rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
                     rect_bullet = Rectangle(bullet.x, bullet.y, bullet.width, bullet.height)
                     collision = check_collision(rect_enemy, rect_bullet)
                     if collision:
                         collisions.append((bullet, enemy,))
+                        break
         return collisions
 
     def _calculate_collisions_ship_enemies(self) -> List[BaseEntity]:
