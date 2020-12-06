@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import List, Tuple, Dict, Union
 
@@ -20,12 +21,13 @@ class Action(Enum):
 
 class PyxelTronGameWorld(GameWorld):
 
-    def __init__(self):
-        super().__init__()
-        self._collisions: Union[Dict[str, Union[List[Tuple[int, int]], List[int]]], None] = None
-
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
+        self.add_entity_to_category(Enemy(16, 16), 'enemies')
+        self.add_entity_to_category(Enemy(24, 8), 'enemies')
+        self.add_entity_to_category(Enemy(96, 32), 'enemies')
+        self.add_entity_to_category(Enemy(96, 96), 'enemies')
+        self.add_entity_to_category(Enemy(8, 92), 'enemies')
         self.add_entity_to_category(Enemy(16, 16), 'enemies')
         self.add_entity_to_category(Enemy(24, 8), 'enemies')
         self.add_entity_to_category(Enemy(96, 32), 'enemies')
@@ -86,14 +88,21 @@ class PyxelTronGameWorld(GameWorld):
         self._handle_actions(actions)
         self._update_enemies()
         self._update_positions()
-        # TODO: remove entities outside world zone render. should be configured by entity class
-        self._update_collisions()
-        # TODO: actions after collision evaluation (ship destroyed, enemy down etc)
+        self._evaluate_scenario()
 
-    def _update_collision_bullets_enemies(self) -> List[Tuple[int, int]]:
+    def _evaluate_scenario(self):
+        # TODO: remove entities outside world zone render. should be configured by entity class
+        ship_enemies = self._calculate_collisions_ship_enemies()
+        bullet_enemies = self._calculate_collisions_bullets_enemies()
+        for bullet, enemy in bullet_enemies:
+            self.remove_entity_from_category('enemies', enemy)
+            self.remove_entity_from_category('bullets', bullet)
+        # TODO: return actions after collision evaluation (ship destroyed, enemy down etc)
+
+    def _calculate_collisions_bullets_enemies(self) -> List[Tuple[BaseEntity, BaseEntity]]:
         enemies = self.get_entities_by_category('enemies')
         bullets = self.get_entities_by_category('bullets')
-        collisions: List[Tuple[int, int]] = []
+        collisions: List[Tuple[BaseEntity, BaseEntity]] = []
         if bullets and enemies:
             for idx_enemy, enemy in enumerate(enemies):
                 for idx_bullet, bullet in enumerate(bullets):
@@ -101,22 +110,22 @@ class PyxelTronGameWorld(GameWorld):
                     rect_bullet = Rectangle(bullet.x, bullet.y, bullet.width, bullet.height)
                     collision = check_collision(rect_enemy, rect_bullet)
                     if collision:
-                        collisions.append((idx_bullet, idx_enemy,))
+                        collisions.append((bullet, enemy,))
         return collisions
 
-    def _update_collision_ship_enemies(self) -> List[int]:
+    def _calculate_collisions_ship_enemies(self) -> List[BaseEntity]:
         ship = self.get_entity('ship')
         enemies = self.get_entities_by_category('enemies')
-        collisions: List[int] = []
+        collisions: List[BaseEntity] = []
         rect_ship = Rectangle(ship.x, ship.y, ship.width, ship.height)
         for idx_enemy, enemy in enumerate(enemies):
             rect_enemy = Rectangle(enemy.x, enemy.y, enemy.width, enemy.height)
             collision = check_collision(rect_enemy, rect_ship)
             if collision:
-                collisions.append(idx_enemy)
+                collisions.append(enemy)
         return collisions
 
-    def _update_collisions(self) -> None:
-        ship_enemies = self._update_collision_ship_enemies()
-        bullet_enemies = self._update_collision_bullets_enemies()
-        self._collisions = dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
+    def _calculate_collisions(self) -> Dict[str, Union[List[Tuple[BaseEntity, BaseEntity]], List[BaseEntity]]]:
+        ship_enemies = self._calculate_collisions_ship_enemies()
+        bullet_enemies = self._calculate_collisions_bullets_enemies()
+        return dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
