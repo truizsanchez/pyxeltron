@@ -123,7 +123,3 @@ class PyxelTronGameWorld(GameWorld):
                 collisions.append(enemy)
         return collisions
 
-    def _calculate_collisions(self) -> Dict[str, Union[List[Tuple[BaseEntity, BaseEntity]], List[BaseEntity]]]:
-        ship_enemies = self._calculate_collisions_ship_enemies()
-        bullet_enemies = self._calculate_collisions_bullets_enemies()
-        return dict(ship_enemies=ship_enemies, bullet_enemies=bullet_enemies)
