@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import List, Tuple
 
@@ -18,7 +19,30 @@ class Action(Enum):
     SHOOT = 5
 
 
+class ResultType(Enum):
+    SHIP_SHOOTING = 1
+    SHIP_DESTROYED = 2
+    ENEMY_DOWN = 3
+    ALL_CLEAR = 4
+
+
+class ResultData:
+    def __init__(self, result_type, data=None):
+        self.result_type = result_type
+        self.data = data
+
+    def __str__(self):
+        return self.result_type
+
+    def __repr__(self):
+        return str(self.result_type)
+
+
 class PyxelTronGameWorld(GameWorld):
+
+    def __init__(self):
+        super().__init__()
+        self._results = []
 
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
@@ -50,6 +74,7 @@ class PyxelTronGameWorld(GameWorld):
                 ship.direction = None
 
             if action == Action.SHOOT:
+                self._results.append(ResultData(ResultType.SHIP_SHOOTING))
                 bullet = Bullet(ship.x, ship.y, direction=ship.orientation)
                 self.add_entity_to_category(bullet, 'bullets')
 
@@ -82,16 +107,24 @@ class PyxelTronGameWorld(GameWorld):
         self._handle_actions(actions)
         self._update_enemies()
         self._update_positions()
-        self._evaluate_scenario()
+        return self._evaluate_scenario()
 
     def _evaluate_scenario(self):
-        ship_enemies = self._calculate_collisions_ship_enemies()
+        collided_enemy = self._calculate_collisions_ship_enemies()
         bullet_enemies = self._calculate_collisions_bullets_enemies()
         for bullet, enemy in bullet_enemies:
+            self._results.append(ResultData(ResultType.ENEMY_DOWN, enemy))
             self.remove_entity_from_category('enemies', enemy)
             self.remove_entity_from_category('bullets', bullet)
         self._remove_entities_outside_viewport()
-        # TODO: return actions after collision evaluation (ship destroyed, enemy down etc)
+        enemies = self.get_entities_by_category('enemies')
+        if not enemies:
+            self._results.append(ResultData(ResultType.ALL_CLEAR))
+        if collided_enemy:
+            self._results.append(ResultData(ResultType.SHIP_DESTROYED, collided_enemy))
+        results = self._results
+        self._results = []
+        return results
 
     def _calculate_collision_between_entities(self, entity1: BaseEntity, entity2: BaseEntity) -> bool:
         rect_entity1 = Rectangle(entity1.x, entity1.y, entity1.width, entity1.height)
@@ -112,15 +145,13 @@ class PyxelTronGameWorld(GameWorld):
                     impacted_bullets.append(bullet)
         return collisions
 
-    def _calculate_collisions_ship_enemies(self) -> List[BaseEntity]:
+    def _calculate_collisions_ship_enemies(self) -> BaseEntity:
         ship = self.get_entity('ship')
         enemies = self.get_entities_by_category('enemies')
-        collisions: List[BaseEntity] = []
         for enemy in enemies:
             collision = self._calculate_collision_between_entities(enemy, ship)
             if collision:
-                collisions.append(enemy)
-        return collisions
+                return enemy
 
     def _remove_entities_outside_viewport(self):
         bullets = self.get_entities_by_category('bullets')

@@ -2,7 +2,8 @@ from typing import List
 
 import pyxel
 
-from game.game_world import PyxelTronGameWorld, Action
+from game.game_world import PyxelTronGameWorld, Action, ResultType
+from game.sound import play_sound_shooting, play_sound_ship_destroyed
 from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, CAPTION
 from settings import DEBUG
 
@@ -48,7 +49,19 @@ class PyxelTron:
 
     def update(self) -> None:
         actions = self._handle_input()
-        self.world.update_scenario(actions)
+        results = self.world.update_scenario(actions)
+        for result in results:
+            self._evaluate_result(result)
+
+    def _evaluate_result(self, result):
+        if result.result_type == ResultType.SHIP_SHOOTING:
+            play_sound_shooting()
+        elif result.result_type == ResultType.SHIP_DESTROYED:
+            play_sound_ship_destroyed()
+        elif result.result_type == ResultType.ENEMY_DOWN:
+            pass
+        elif result.result_type == ResultType.ALL_CLEAR:
+            pass
 
     def draw(self) -> None:
         pyxel.cls(0)
