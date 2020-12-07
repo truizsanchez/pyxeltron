@@ -3,7 +3,7 @@ from typing import List
 import pyxel
 
 from game.game_world import PyxelTronGameWorld, Action, ResultType
-from game.sound import play_sound_shooting, play_sound_ship_destroyed
+from game.sound import play_sound_shooting, play_sound_ship_destroyed, play_sound_enemy_down
 from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, CAPTION
 from settings import DEBUG
 
@@ -59,7 +59,7 @@ class PyxelTron:
         elif result.result_type == ResultType.SHIP_DESTROYED:
             play_sound_ship_destroyed()
         elif result.result_type == ResultType.ENEMY_DOWN:
-            pass
+            play_sound_enemy_down()
         elif result.result_type == ResultType.ALL_CLEAR:
             pass
 
@@ -67,9 +67,7 @@ class PyxelTron:
         pyxel.cls(0)
         self.render_world()
         if DEBUG:
-            bullets = self.world.get_entities_by_category('bullets')
-            n_bullets = len(bullets) if bullets is not None else '-'
-            msg = f'{n_bullets} bullets'
+            msg = f''
             pyxel.text(100, 110, msg, 4)
 
 
