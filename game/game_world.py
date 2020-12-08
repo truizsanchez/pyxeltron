@@ -9,6 +9,7 @@ from engine.physics.collisions.rectangle import Rectangle, check_collision
 from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
+from game.levels import levels
 
 
 class Action(Enum):
@@ -43,14 +44,18 @@ class PyxelTronGameWorld(GameWorld):
     def __init__(self):
         super().__init__()
         self._results = []
+        self.level = 0
 
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
-        self.add_entity_to_category(Enemy(16, 16), 'enemies')
-        self.add_entity_to_category(Enemy(24, 8), 'enemies')
-        self.add_entity_to_category(Enemy(96, 32), 'enemies')
-        self.add_entity_to_category(Enemy(96, 96), 'enemies')
-        self.add_entity_to_category(Enemy(8, 92), 'enemies')
+        self.load_level(0)
+
+    def load_level(self, number: int):
+        ship_coordinates = levels[number]['ship']
+        enemies_coordinates = levels[number]['enemies']
+        self.add_entity(Ship(ship_coordinates[0], ship_coordinates[1]), 'ship')
+        for enemy in enemies_coordinates:
+            self.add_entity_to_category(Enemy(enemy[0], enemy[1]), 'enemies')
 
     def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
@@ -120,6 +125,8 @@ class PyxelTronGameWorld(GameWorld):
         enemies = self.get_entities_by_category('enemies')
         if not enemies:
             self._results.append(ResultData(ResultType.ALL_CLEAR))
+            self.level += 1
+            self.load_level(self.level)
         if collided_enemy:
             self._results.append(ResultData(ResultType.SHIP_DESTROYED, collided_enemy))
         results = self._results

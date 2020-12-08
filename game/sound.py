@@ -5,7 +5,7 @@ def play_sound_shooting():
     # note, tone, volume, effect, speed
     pyxel.sound(0).set(
         "c2",
-        "t",  # tone, square
+        "t",  # tone
         "6",
         "n",
         10,
@@ -16,8 +16,8 @@ def play_sound_shooting():
 def play_sound_ship_destroyed():
     # note, tone, volume, effect, speed
     pyxel.sound(0).set(
-        "e2e2c2g1",
-        "t",  # tone
+        "a0",
+        "n",  # tone
         "6",
         "n",
         10,
@@ -28,8 +28,8 @@ def play_sound_ship_destroyed():
 def play_sound_enemy_down():
     # note, tone, volume, effect, speed
     pyxel.sound(0).set(
-        "a1a1g1",
-        "s",  # tone
+        "c2c2c2",
+        "n",  # tone
         "6",
         "n",
         10,
