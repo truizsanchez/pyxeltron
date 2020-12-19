@@ -24,7 +24,14 @@ class ResultType(Enum):
     SHIP_SHOOTING = 1
     SHIP_DESTROYED = 2
     ENEMY_DOWN = 3
-    ALL_CLEAR = 4
+    LEVEL_CLEARED = 4
+
+
+class ApplicationState(Enum):
+    MENU = 1
+    PLAYING = 2
+    GAME_OVER = 3
+    GAME_FINISHED = 4
 
 
 class ResultData:
@@ -44,11 +51,14 @@ class PyxelTronGameWorld(GameWorld):
     def __init__(self):
         super().__init__()
         self._results = []
+        self.state = None
         self.level = 0
+        self.n_levels = len(levels)
 
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
-        self.load_level(0)
+        self.state = ApplicationState.PLAYING
+        self.load_level(1)
 
     def load_level(self, number: int):
         ship_coordinates = levels[number]['ship']
@@ -124,14 +134,20 @@ class PyxelTronGameWorld(GameWorld):
         self._remove_entities_outside_viewport()
         enemies = self.get_entities_by_category('enemies')
         if not enemies:
-            self._results.append(ResultData(ResultType.ALL_CLEAR))
-            self.level += 1
-            self.load_level(self.level)
+            self._evaluate_scenario_changing()
         if collided_enemy:
             self._results.append(ResultData(ResultType.SHIP_DESTROYED, collided_enemy))
         results = self._results
         self._results = []
         return results
+
+    def _evaluate_scenario_changing(self):
+        self.level += 1
+        if self.level < self.n_levels:
+            self._results.append(ResultData(ResultType.LEVEL_CLEARED))
+            self.load_level(self.level)
+        else:
+            self.state = ApplicationState.GAME_FINISHED
 
     def _calculate_collision_between_entities(self, entity1: BaseEntity, entity2: BaseEntity) -> bool:
         rect_entity1 = Rectangle(entity1.x, entity1.y, entity1.width, entity1.height)

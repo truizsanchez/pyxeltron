@@ -2,7 +2,7 @@ from typing import List
 
 import pyxel
 
-from game.game_world import PyxelTronGameWorld, Action, ResultType
+from game.game_world import PyxelTronGameWorld, Action, ResultType, ApplicationState
 from game.sound import play_sound_shooting, play_sound_ship_destroyed, play_sound_enemy_down
 from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, CAPTION
 from settings import DEBUG
@@ -18,18 +18,21 @@ class PyxelTron:
         pyxel.run(self.update, self.draw)
 
     def render_world(self) -> None:
-        for entity in self.world.entities:
-            if entity.render:
-                pyxel.blt(
-                    entity.x,
-                    entity.y,
-                    entity.render.IMAGE_BANK,
-                    entity.render.u,
-                    entity.render.v,
-                    entity.render.WIDTH,
-                    entity.render.HEIGHT,
-                    COLOR_BLACK
-                )
+        if self.world.state == ApplicationState.PLAYING:
+            for entity in self.world.entities:
+                if entity.render:
+                    pyxel.blt(
+                        entity.x,
+                        entity.y,
+                        entity.render.IMAGE_BANK,
+                        entity.render.u,
+                        entity.render.v,
+                        entity.render.WIDTH,
+                        entity.render.HEIGHT,
+                        COLOR_BLACK
+                    )
+        elif self.world.state == ApplicationState.GAME_FINISHED:
+            pyxel.text(60, 50, 'FINISHED', 4)
 
     def _handle_input(self) -> List[Action]:
         actions = []
@@ -60,7 +63,7 @@ class PyxelTron:
             play_sound_ship_destroyed()
         elif result.result_type == ResultType.ENEMY_DOWN:
             play_sound_enemy_down()
-        elif result.result_type == ResultType.ALL_CLEAR:
+        elif result.result_type == ResultType.LEVEL_CLEARED:
             pass
 
     def draw(self) -> None:
