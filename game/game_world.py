@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from typing import List, Tuple
 
@@ -11,6 +12,7 @@ from game.entities.ship import Ship
 from game.levels import levels
 
 INITIAL_LIVES = 3
+PAUSE_COOLDOWN = 1  # seconds
 
 
 class Action(Enum):
@@ -37,6 +39,7 @@ class ApplicationState(Enum):
     PLAYING = 2
     GAME_OVER = 3
     GAME_FINISHED = 4
+    PAUSE_COOLDOWN = 5
 
 
 class ResultData:
@@ -60,6 +63,8 @@ class PyxelTronGameWorld(GameWorld):
         self.level = 1
         self.n_levels = len(levels)
         self.lives = INITIAL_LIVES
+        self.pause_cooldown = None
+        self.current_time = datetime.now()
 
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
@@ -144,10 +149,17 @@ class PyxelTronGameWorld(GameWorld):
             self._calculate_direction_from_enemy_to_ship(enemy, ship)
 
     def update_scenario(self, actions: List[Action]):
-        self._handle_actions(actions)
-        self._update_enemies()
-        self._update_positions()
-        return self._evaluate_scenario()
+        self.current_time = datetime.now()
+        if self.state == ApplicationState.PAUSE_COOLDOWN:
+            if (self.current_time - self.pause_cooldown).total_seconds() > PAUSE_COOLDOWN:
+                self.pause_cooldown = None
+                self.state = ApplicationState.PLAYING
+            return []
+        else:
+            self._handle_actions(actions)
+            self._update_enemies()
+            self._update_positions()
+            return self._evaluate_scenario()
 
     def _evaluate_scenario(self):
         ship_collision = self._calculate_collisions_ship_enemies()
@@ -171,6 +183,9 @@ class PyxelTronGameWorld(GameWorld):
         self.lives -= 1
         if self.lives == 0:
             self.state = ApplicationState.GAME_OVER
+        else:
+            self.state = ApplicationState.PAUSE_COOLDOWN
+            self.pause_cooldown = datetime.now()
 
     def _evaluate_scenario_changing(self):
         if self.level < self.n_levels:

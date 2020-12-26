@@ -19,7 +19,7 @@ class PyxelTron:
         pyxel.run(self.update, self.draw)
 
     def render_world(self) -> None:
-        if self.world.state == ApplicationState.PLAYING:
+        if self.world.state in [ApplicationState.PLAYING, ApplicationState.PAUSE_COOLDOWN]:
             for entity in self.world.entities:
                 if entity.render:
                     pyxel.blt(
@@ -97,7 +97,7 @@ class PyxelTron:
 
     def update(self) -> None:
         actions = self._handle_input()
-        if self.world.state == ApplicationState.PLAYING:
+        if self.world.state in [ApplicationState.PLAYING, ApplicationState.PAUSE_COOLDOWN]:
             results = self.world.update_scenario(actions)
             for result in results:
                 self._evaluate_result(result)
