@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Tuple
 
 from engine.entities.base import BaseEntity
-from engine.physics.movement import UP, DOWN, RIGHT, LEFT
+from engine.physics.movement import UP, DOWN, RIGHT, LEFT, LEFT_UP, LEFT_DOWN, RIGHT_UP, RIGHT_DOWN
 from engine.game_world import GameWorld
 from engine.physics.collisions.rectangle import Rectangle, check_collision
 from game.entities.bullet import Bullet
@@ -18,7 +18,11 @@ class Action(Enum):
     MOVE_RIGHT = 2
     MOVE_UP = 3
     MOVE_DOWN = 4
-    SHOOT = 5
+    MOVE_LEFT_UP = 5
+    MOVE_LEFT_DOWN = 6
+    MOVE_RIGHT_UP = 7
+    MOVE_RIGHT_DOWN = 8
+    SHOOT = 9
 
 
 class ResultType(Enum):
@@ -93,6 +97,19 @@ class PyxelTronGameWorld(GameWorld):
             elif action == Action.MOVE_DOWN:
                 ship.orientation = DOWN
                 ship.direction = DOWN
+            elif action == Action.MOVE_LEFT_UP:
+                ship.orientation = LEFT_UP
+                ship.direction = LEFT_UP
+            elif action == Action.MOVE_LEFT_DOWN:
+                ship.orientation = LEFT_DOWN
+                ship.direction = LEFT_DOWN
+            elif action == Action.MOVE_RIGHT_UP:
+                ship.orientation = RIGHT_UP
+                ship.direction = RIGHT_UP
+            elif action == Action.MOVE_RIGHT_DOWN:
+                ship.orientation = RIGHT_DOWN
+                ship.direction = RIGHT_DOWN
+
             else:
                 ship.direction = None
 

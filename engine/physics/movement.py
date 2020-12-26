@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 
 
@@ -15,11 +16,20 @@ UP = 'up'
 DOWN = 'down'
 RIGHT = 'right'
 LEFT = 'left'
+LEFT_UP = 'left_up'
+LEFT_DOWN = 'left_down'
+RIGHT_UP = 'right_up'
+RIGHT_DOWN = 'right_down'
+
 CARTESIAN = {
     UP: dict(x=0, y=-1),
     DOWN: dict(x=0, y=1),
     RIGHT: dict(x=1, y=0),
     LEFT: dict(x=-1, y=0),
+    LEFT_UP: dict(x=-1, y=-1),
+    LEFT_DOWN: dict(x=-1, y=1),
+    RIGHT_UP: dict(x=1, y=-1),
+    RIGHT_DOWN: dict(x=1, y=1)
 }
 
 

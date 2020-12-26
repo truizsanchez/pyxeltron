@@ -62,19 +62,38 @@ class PyxelTron:
             pyxel.quit()
 
         if self.world.state == ApplicationState.PLAYING:
-            if pyxel.btn(pyxel.KEY_LEFT):
-                actions.append(Action.MOVE_LEFT)
-            elif pyxel.btn(pyxel.KEY_RIGHT):
-                actions.append(Action.MOVE_RIGHT)
-            elif pyxel.btn(pyxel.KEY_UP):
-                actions.append(Action.MOVE_UP)
-            elif pyxel.btn(pyxel.KEY_DOWN):
-                actions.append(Action.MOVE_DOWN)
+            action_movement = self._handle_input_movement()
+            if action_movement:
+                actions.append(action_movement)
             if pyxel.btnp(pyxel.KEY_SPACE):
                 actions.append(Action.SHOOT)
         elif pyxel.btnp(pyxel.KEY_C):
             self.world.initialize()
         return actions
+
+    def _handle_input_movement(self):
+        left_pressed = pyxel.btn(pyxel.KEY_LEFT)
+        right_pressed = pyxel.btn(pyxel.KEY_RIGHT)
+        up_pressed = pyxel.btn(pyxel.KEY_UP)
+        down_pressed = pyxel.btn(pyxel.KEY_DOWN)
+        action = None
+        if left_pressed and up_pressed:
+            action = Action.MOVE_LEFT_UP
+        elif left_pressed and down_pressed:
+            action = Action.MOVE_LEFT_DOWN
+        elif right_pressed and up_pressed:
+            action = Action.MOVE_RIGHT_UP
+        elif right_pressed and down_pressed:
+            action = Action.MOVE_RIGHT_DOWN
+        elif left_pressed:
+            action = Action.MOVE_LEFT
+        elif right_pressed:
+            action = Action.MOVE_RIGHT
+        elif up_pressed:
+            action = Action.MOVE_UP
+        elif down_pressed:
+            action = Action.MOVE_DOWN
+        return action
 
     def update(self) -> None:
         actions = self._handle_input()
