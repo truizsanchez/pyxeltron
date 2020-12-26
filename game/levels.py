@@ -1,5 +1,3 @@
-from game.entities.enemy import Enemy
-
 levels = {
     1: {
         'ship': (64, 64),

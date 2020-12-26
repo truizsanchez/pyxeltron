@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 from typing import List, Tuple
 
@@ -10,6 +9,8 @@ from game.entities.bullet import Bullet
 from game.entities.enemy import Enemy
 from game.entities.ship import Ship
 from game.levels import levels
+
+INITIAL_LIVES = 3
 
 
 class Action(Enum):
@@ -52,8 +53,9 @@ class PyxelTronGameWorld(GameWorld):
         super().__init__()
         self._results = []
         self.state = None
-        self.level = 0
+        self.level = 1
         self.n_levels = len(levels)
+        self.lives = INITIAL_LIVES
 
     def initialize(self):
         self.add_entity(Ship(64, 64), 'ship')
@@ -61,11 +63,17 @@ class PyxelTronGameWorld(GameWorld):
         self.load_level(1)
 
     def load_level(self, number: int):
+        self._clear_scenario()
+        self.level = number
         ship_coordinates = levels[number]['ship']
         enemies_coordinates = levels[number]['enemies']
         self.add_entity(Ship(ship_coordinates[0], ship_coordinates[1]), 'ship')
         for enemy in enemies_coordinates:
             self.add_entity_to_category(Enemy(enemy[0], enemy[1]), 'enemies')
+
+    def _clear_scenario(self):
+        self.remove_all_entities('bullets')
+        self.remove_all_entities('enemies')
 
     def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
@@ -125,7 +133,7 @@ class PyxelTronGameWorld(GameWorld):
         return self._evaluate_scenario()
 
     def _evaluate_scenario(self):
-        collided_enemy = self._calculate_collisions_ship_enemies()
+        ship_collision = self._calculate_collisions_ship_enemies()
         bullet_enemies = self._calculate_collisions_bullets_enemies()
         for bullet, enemy in bullet_enemies:
             self._results.append(ResultData(ResultType.ENEMY_DOWN, enemy))
@@ -135,17 +143,21 @@ class PyxelTronGameWorld(GameWorld):
         enemies = self.get_entities_by_category('enemies')
         if not enemies:
             self._evaluate_scenario_changing()
-        if collided_enemy:
-            self._results.append(ResultData(ResultType.SHIP_DESTROYED, collided_enemy))
+        if ship_collision:
+            self._evaluate_ship_collision(ship_collision)
         results = self._results
         self._results = []
         return results
 
+    def _evaluate_ship_collision(self, ship_collision):
+        self._results.append(ResultData(ResultType.SHIP_DESTROYED, ship_collision))
+        self.lives -= 1
+        if self.lives == 0:
+            self.state = ApplicationState.GAME_OVER
+
     def _evaluate_scenario_changing(self):
-        self.level += 1
         if self.level < self.n_levels:
             self._results.append(ResultData(ResultType.LEVEL_CLEARED))
-            self.load_level(self.level)
         else:
             self.state = ApplicationState.GAME_FINISHED
 

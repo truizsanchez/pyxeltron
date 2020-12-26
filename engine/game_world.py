@@ -36,6 +36,9 @@ class GameWorld:
         entities = self._entities[category]
         entities.remove(entity)
 
+    def remove_all_entities(self, category: str) -> None:
+        self._entities[category] = []
+
     def _update_positions(self) -> None:
         for entity in self.entities:
             update_position(entity, self.WIDTH, self.HEIGHT)
