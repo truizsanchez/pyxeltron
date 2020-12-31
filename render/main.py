@@ -34,11 +34,13 @@ class PyxelTron:
                     )
             self._render_playing_ui()
         elif self.world.state == ApplicationState.GAME_FINISHED:
-            pyxel.text(30, 50, 'CONGRATULATIONS!', 4)
-            pyxel.text(30, 60, 'PRESS C TO PLAY AGAIN', 4)
+            pyxel.text(40, 40, 'CONGRATULATIONS!', 4)
+            pyxel.text(40, 50, 'C: PLAY AGAIN', 4)
+            pyxel.text(40, 60, 'Q: EXIT', 4)
         elif self.world.state == ApplicationState.GAME_OVER:
-            pyxel.text(30, 50, 'GAME OVER', 4)
-            pyxel.text(30, 60, 'PRESS C TO PLAY AGAIN', 4)
+            pyxel.text(40, 40, 'GAME OVER', 4)
+            pyxel.text(40, 50, 'C: PLAY AGAIN', 4)
+            pyxel.text(40, 60, 'Q: EXIT', 4)
 
     def _render_playing_ui(self):
         pyxel.text(1, 1, f'Level {self.world.level}', 4)
