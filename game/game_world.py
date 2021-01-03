@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from itertools import chain
 from typing import List, Tuple
 
 from engine.entities.base import BaseEntity
@@ -86,9 +85,9 @@ class PyxelTronGameWorld(GameWorld):
             self.add_entity_to_category(ShootingEnemy(enemy[0], enemy[1]), 'shooting_enemies')
 
     def _clear_scenario(self):
-        self.remove_all_entities('bullets')
-        self.remove_all_entities('enemies')
-        self.remove_all_entities('shooting_enemies')
+        self.clear_category('bullets')
+        self.clear_category('enemies')
+        self.clear_category('shooting_enemies')
 
     def _handle_actions(self, actions: List[Action]) -> None:
         ship = self.get_entity('ship')
@@ -149,10 +148,9 @@ class PyxelTronGameWorld(GameWorld):
                 enemy.orientation = UP
 
     def _update_enemies(self) -> None:
-        enemies: List[BaseEntity] = self.get_entities_by_category('enemies')
-        shooting_enemies: List[BaseEntity] = self.get_entities_by_category('shooting_enemies')
+        enemies: List[BaseEntity] = self.get_entities(['enemies', 'shooting_enemies'])
         ship: BaseEntity = self.get_entity('ship')
-        for enemy in chain(enemies, shooting_enemies):
+        for enemy in enemies:
             self._calculate_direction_from_enemy_to_ship(enemy, ship)
 
     def update_scenario(self, actions: List[Action]):
@@ -173,12 +171,11 @@ class PyxelTronGameWorld(GameWorld):
         bullet_enemies = self._calculate_collisions_bullets_enemies()
         for bullet, enemy in bullet_enemies:
             self._results.append(ResultData(ResultType.ENEMY_DOWN, enemy))
-            self.remove_entity_from_category('enemies', enemy)
-            self.remove_entity_from_category('bullets', bullet)
+            self.remove_entity_from_category(enemy, 'enemies')
+            self.remove_entity_from_category(bullet, 'bullets')
         self._remove_entities_outside_viewport()
-        enemies = self.get_entities_by_category('enemies')
-        shooting_enemies = self.get_entities_by_category('shooting_enemies')
-        if not enemies and not shooting_enemies:
+        enemies = self.get_entities(['enemies', 'shooting_enemies'])
+        if not enemies:
             self._evaluate_scenario_changing()
         if ship_collision:
             self._evaluate_ship_collision(ship_collision)
@@ -207,12 +204,11 @@ class PyxelTronGameWorld(GameWorld):
         return check_collision(rect_entity1, rect_entity2)
 
     def _calculate_collisions_bullets_enemies(self) -> List[Tuple[BaseEntity, BaseEntity]]:
-        enemies = self.get_entities_by_category('enemies')
-        shooting_enemies = self.get_entities_by_category('shooting_enemies')
-        bullets = self.get_entities_by_category('bullets')
+        enemies = self.get_entities(['enemies', 'shooting_enemies'])
+        bullets = self.get_entities('bullets')
         collisions: List[Tuple[BaseEntity, BaseEntity]] = []
         impacted_bullets = []
-        for enemy in chain(enemies, shooting_enemies):
+        for enemy in enemies:
             bullets = [bullet for bullet in bullets if bullet not in impacted_bullets]
             for bullet in bullets:
                 collision = self._calculate_collision_between_entities(enemy, bullet)
@@ -223,15 +219,14 @@ class PyxelTronGameWorld(GameWorld):
 
     def _calculate_collisions_ship_enemies(self) -> BaseEntity:
         ship = self.get_entity('ship')
-        enemies = self.get_entities_by_category('enemies')
-        shooting_enemies = self.get_entities_by_category('shooting_enemies')
-        for enemy in chain(enemies, shooting_enemies):
+        enemies = self.get_entities(['enemies', 'shooting_enemies'])
+        for enemy in enemies:
             collision = self._calculate_collision_between_entities(enemy, ship)
             if collision:
                 return enemy
 
     def _remove_entities_outside_viewport(self):
-        bullets = self.get_entities_by_category('bullets')
+        bullets = self.get_entities('bullets')
         for bullet in bullets:
             if bullet.x < 0 or bullet.x > self.WIDTH or bullet.y < 0 or bullet.y > self.HEIGHT:
-                self.remove_entity_from_category('bullets', bullet)
+                self.remove_entity_from_category(bullet, 'bullets')

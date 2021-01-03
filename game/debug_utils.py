@@ -3,9 +3,8 @@ import logging
 
 def debug_scenario_data(game_world):
     ship = game_world.get_entity('ship')
-    enemies = game_world.get_entities_by_category('enemies')
-    shooting_enemies = game_world.get_entities_by_category('shooting_enemies')
-    bullets = game_world.get_entities_by_category('bullets')
+    enemies = game_world.get_entities(['enemies', 'shooting_enemies'])
+    bullets = game_world.get_entities('bullets')
     ship_data = ''
     enemies_data = ''
     bullets_data = ''
@@ -15,8 +14,6 @@ def debug_scenario_data(game_world):
         enemies_data = enemies_data + f'[{enemy_idx}] x: {enemy.x}, y: {enemy.y}\n'
     for bullet_idx, bullet in enumerate(bullets):
         enemies_data = enemies_data + f'[{bullet_idx}] x: {bullet.x}, y: {bullet.y}\n'
-    for enemy_idx, enemy in enumerate(shooting_enemies):
-        enemies_data = enemies_data + f'[{enemy_idx}] x: {enemy.x}, y: {enemy.y}\n'
     msg = f'Ship:\n{ship_data}\nEnemies:\n{enemies_data}\nBullets:\n{bullets_data}\n'
     logging.warning(msg)
 
