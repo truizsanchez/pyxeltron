@@ -76,8 +76,8 @@ class PyxelTronGameWorld(GameWorld):
         self._clear_scenario()
         self.level = number
         ship_coordinates = levels[number]['ship']
-        enemies_coordinates = levels[number]['enemies']
-        shooting_enemies_coordinates = levels[number]['shooting_enemies']
+        enemies_coordinates = levels[number].get('enemies', [])
+        shooting_enemies_coordinates = levels[number].get('shooting_enemies', [])
         self.add_entity(Ship(ship_coordinates[0], ship_coordinates[1]), 'ship')
         for enemy in enemies_coordinates:
             self.add_entity_to_category(Enemy(enemy[0], enemy[1]), 'enemies')
@@ -171,7 +171,10 @@ class PyxelTronGameWorld(GameWorld):
         bullet_enemies = self._calculate_collisions_bullets_enemies()
         for bullet, enemy in bullet_enemies:
             self._results.append(ResultData(ResultType.ENEMY_DOWN, enemy))
-            self.remove_entity_from_category(enemy, 'enemies')
+            if isinstance(enemy, ShootingEnemy):
+                self.remove_entity_from_category(enemy, 'shooting_enemies')
+            elif isinstance(enemy, Enemy):
+                self.remove_entity_from_category(enemy, 'enemies')
             self.remove_entity_from_category(bullet, 'bullets')
         self._remove_entities_outside_viewport()
         enemies = self.get_entities(['enemies', 'shooting_enemies'])

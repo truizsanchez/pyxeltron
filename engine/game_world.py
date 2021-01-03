@@ -34,7 +34,8 @@ class GameWorld:
             entities = self._entities.get(category, [])
         else:
             entities = []
-            entities.extend(self._entities.get(k, []) for k in category)
+            for k in category:
+                entities.extend(self._entities.get(k, []))
         return entities
 
     def remove_entity_from_category(self, entity: BaseEntity, category: str) -> None:
