@@ -3,8 +3,8 @@ import logging
 
 def debug_scenario_data(game_world):
     ship = game_world.get_entity('ship')
-    enemies = game_world.get_entities_by_category('enemies')
-    bullets = game_world.get_entities_by_category('bullets')
+    enemies = game_world.get_entities('enemies')
+    bullets = game_world.get_entities('bullets')
     ship_data = ''
     enemies_data = ''
     bullets_data = ''
