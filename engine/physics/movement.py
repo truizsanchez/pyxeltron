@@ -1,4 +1,4 @@
-import logging
+import math
 from enum import Enum
 
 
@@ -53,3 +53,16 @@ def update_position(entity, world_width, world_height) -> None:
 
         entity.x = x
         entity.y = y
+
+
+def vector_between_entities(entity1, entity2):
+    x = entity2.x - entity1.x
+    y = entity2.y - entity1.y
+    return x, y
+
+
+def cartesian_to_polar(x, y):
+    distance = math.sqrt(x**2 + y**2)
+    angle = math.atan2(x, y)
+    angle = math.degrees(angle)
+    return distance, angle

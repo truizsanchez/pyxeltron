@@ -148,10 +148,14 @@ class PyxelTronGameWorld(GameWorld):
                 enemy.orientation = UP
 
     def _update_enemies(self) -> None:
-        enemies: List[BaseEntity] = self.get_entities(['enemies', 'shooting_enemies'])
+        enemies: List[BaseEntity] = self.get_entities('enemies')
+        shooting_enemies: List[ShootingEnemy] = self.get_entities('shooting_enemies')
         ship: BaseEntity = self.get_entity('ship')
-        for enemy in enemies:
+        for enemy in enemies + shooting_enemies:
             self._calculate_direction_from_enemy_to_ship(enemy, ship)
+        for enemy in shooting_enemies:
+            if enemy.evaluate_shooting():
+                enemy.shoot(ship)
 
     def update_scenario(self, actions: List[Action]):
         self.current_time = datetime.now()
