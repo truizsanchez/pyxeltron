@@ -19,3 +19,6 @@ There are also a windows executable packing the game, in `standalone_executable/
 * Create new types of enemies that shoots, drop bombs etc.
 * Add power-up items.
 * Local and internet cooperative (2 players).
+
+## Assets
+Credits to [Cluly](https://cluly.itch.io/)
