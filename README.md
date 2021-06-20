@@ -13,7 +13,7 @@ That's why the project have this structure:
 ## How to run
 Run `render/main.py`
 
-There are also a windows executable packing the game, in `dist/pyxeltron.exe`
+There are also a windows executable packing the game, in `standalone_executable/pyxeltron.exe`
 
 ## Roadmap
 * Create new types of enemies that shoots, drop bombs etc.
