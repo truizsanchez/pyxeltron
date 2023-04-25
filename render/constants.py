@@ -6,7 +6,7 @@ SHIP = 1
 SHIP_PATH = 'assets/ship.png'
 
 COLOR_BLACK = 0x000000
-PICO8_PALETTE = [
+PICO8_PALETTE = [  # TODO: currently this is not used
     0x000000,
     0x1D2B53,
     0x7E2553,
@@ -25,4 +25,4 @@ PICO8_PALETTE = [
     0xFFCCAA
 ]
 
-CAPTION = 'PyxelTron'
+TITLE = 'PyxelTron'

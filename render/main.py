@@ -4,7 +4,7 @@ import pyxel
 
 from game.game_world import PyxelTronGameWorld, Action, ResultType, ApplicationState
 from game.sound import play_sound_shooting, play_sound_ship_destroyed, play_sound_enemy_down
-from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, CAPTION
+from render.constants import TILESET, TILESET_PATH, SHIP_PATH, SHIP, PICO8_PALETTE, COLOR_BLACK, TITLE
 from render.icons.heart import HeartIcon
 from settings import DEBUG
 
@@ -12,7 +12,7 @@ from settings import DEBUG
 class PyxelTron:
     def __init__(self):
         self.world = PyxelTronGameWorld()
-        pyxel.init(self.world.WIDTH, self.world.HEIGHT, caption=CAPTION, palette=PICO8_PALETTE)
+        pyxel.init(self.world.WIDTH, self.world.HEIGHT, title=TITLE)
         pyxel.image(TILESET).load(0, 0, TILESET_PATH)
         pyxel.image(SHIP).load(0, 0, SHIP_PATH)
         self.world.initialize()
